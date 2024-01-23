@@ -1,0 +1,279 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.navbar {
+  width: 100%;
+  height: 12vh;
+  background-image: url("/images/bg.jpg");
+  display: inline-flex;
+  align-items: center;
+}
+
+.navbar-header {
+  text-decoration: underline;
+  color: white;
+  margin-left: 30px;
+  cursor: pointer;
+  font-size: 1.5vi;
+  font-weight: 600;
+}
+
+.side-info {
+  background-color: lightgray;
+  height: 88vh;
+  width: 15vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+}
+
+.side-info-button {
+  border: none;
+  border-radius: 25px;
+  height: 6vh;
+  margin-top: 10px;
+  background-color: #fada24;
+  font-weight: 600;
+  width: 13vw;
+  cursor: pointer;
+  font-size: 1vi;
+  transition: 0.25s ease-in-out;
+}
+
+.side-info-button:hover {
+  background-color: #2444fa;
+  color: white;
+}
+
+.input-file {
+  margin-top: 15px;
+  width: 13vw;
+  max-width: 100%;
+  color: #444;
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.input-file::file-selector-button {
+  font-weight: 600;
+  margin-right: 20px;
+  border: none;
+  background-color: #fada24;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: black;
+  cursor: pointer;
+  transition: background 0.25s ease-in-out;
+}
+
+
+.input-file::file-selector-button:hover {
+  background: #2444fa;
+  color: white;
+}
+
+.folder-dialog {
+  margin: auto;
+  width: 70vh;
+  height: 25vh;
+  background-image: url("/images/bg.jpg");
+  border-radius: 5px;
+  border: none;
+  color: white;
+  display: none;
+  position: relative;
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dialog-p {
+  margin-left: 15px;
+}
+
+.input-text {
+  margin-top: 15px;
+  margin-left: 15px;
+  width: 35vh;
+  height: 4vh;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1vi;
+}
+
+.dialog-button {
+  width: 8vh;
+  height: 5vh;
+  border: none;
+  border-radius: 5px;
+  background-color: yellow;
+  font-size: 1.1vi;
+  cursor: pointer;
+  transition: background 0.25s ease-in-out;
+}
+
+.dialog-button:hover {
+  background: #2444fa;
+  color: white;
+}
+
+.buttons-div {
+  align-self: flex-start;
+  margin-right: 25px;
+  margin-top: 25px;
+  position: absolute;
+  right: 0;
+  bottom: 15px;
+}
+
+.file-dialog {
+  margin: auto;
+  width: 70vh;
+  height: 25vh;
+  background-image: url("/images/bg10es.png");
+  border-radius: 5px;
+  border: none;
+  color: white;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  border: 5px dotted rgb(87, 15, 241);
+  margin-top: 15px;
+  padding: 5px;
+}
+
+.side-folder-files {
+  margin: 15px;
+  width: 85vw;
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  height: 78vh;
+}
+
+.files {
+  margin: 10px;
+  height: 110px;
+  width: fit-content;
+  background-color: pink;
+  border-radius: 10px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
+}
+
+.files-img {
+  height: 50px;
+  width: 50px;
+  margin-top: 5px;
+  margin: auto;
+}
+
+.files-link {
+  margin-left: 15px;
+  margin-top: 15px;
+}
+
+.files-name {
+  text-align: center;
+}
+
+.folders {
+  margin: 10px;
+  height: 110px;
+  width: fit-content;
+  background-color: rgb(112, 221, 251);
+  border-radius: 10px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
+}
+
+.folders-img {
+  height: 50px;
+  width: 50px;
+  margin: auto;
+  margin-top: 5px;
+}
+
+.folders-link {
+  margin-left: 15px;
+  margin-top: 15px;
+}
+
+.folders-name {
+  text-align: center;
+}
+
+.folders-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.folders-btn {
+  border: none;
+  width: 10px;
+  height: 15px;
+  margin-top: 25px;
+  margin-left: 5px;
+  cursor: pointer;
+  background-color: transparent;
+  font-size: 11px;
+  text-decoration: underline;
+  top: -20px;
+  right: 5px;
+  position: absolute;
+}
+
+.folders-btn:hover {
+  color: red;
+}
+
+.files-btn {
+  border: none;
+  width: 10px;
+  height: 15px;
+  margin-top: 25px;
+  margin-left: 5px;
+  cursor: pointer;
+  background-color: transparent;
+  font-size: 11px;
+  text-decoration: underline;
+  top: -20px;
+  right: 5px;
+  position: absolute;
+}
+
+.files-btn:hover {
+  color: red;
+}
+
+.files-form {
+  display: flex;
+  flex-direction: row;
+}
+
+.form-css {
+  align-self: center;
+}

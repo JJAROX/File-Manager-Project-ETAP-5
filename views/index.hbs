@@ -1,0 +1,85 @@
+<div class="navbar">
+  <a href="/" class="navbar-header">filemanager</a>
+</div>
+<div class="main">
+  <div class="side-info">
+    <button class="side-info-button new-folder-js">nowy folder</button>
+    <button class="side-info-button new-file-js">nowy plik tekstowy</button>
+    <form class="upload-form" enctype="multipart/form-data" method="post" action="/upload">
+      <input type="file" multiple required accept="image/*" name="inputfile" class="input-file">
+      <button class="side-info-button" type="submit"> upload </button>
+    </form>
+
+  </div>
+  <div class="side-folder-files">
+    <div class="folders-div">
+      {{#each folders}}
+      <div class="folders">
+        <form class="form-css" method="get">
+          <img src="../images/folder.png" alt="folders-img" class="folders-img">
+          <button class="folders-btn" formaction="/deleteFolder" name="id" type="submit" value="{{this}}">X</button>
+          <p class=" folders-name"> {{this}}</p>
+        </form>
+      </div>
+      {{/each}}
+    </div>
+    <div class="files-div">
+      {{#each files}}
+      <div class="files">
+        <form class="form-css" method="get">
+          <img src="{{getIconPath this}}" alt="files-img" class="files-img">
+          <button class="files-btn" formaction="/deleteFile" name="id" type="submit" value="{{this}}">X</button>
+          <p class="files-name"> {{this}}</p>
+        </form>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
+<dialog class="folder-dialog">
+  <form action="/savefolder" method="post" class="dialog-form">
+    <p class="dialog-p">nazwa nowego folderu</p>
+    <input type="text" name="inputText" class="input-text">
+    <div class="buttons-div">
+      <button class="dialog-button" type="submit">ok</button>
+      <button autofocus class="dialog-button cancel-dialog-js-1" type="reset">cancel</button>
+    </div>
+  </form>
+
+</dialog>
+<dialog class="file-dialog">
+  <form action="/savefile" method="post" class="dialog-form">
+    <p class="dialog-p">nazwa nowego pliku</p>
+    <input type="text" name="inputText" class="input-text">
+    <div class="buttons-div">
+      <button class="dialog-button" type="submit">ok</button>
+      <button autofocus class="dialog-button cancel-dialog-js-2" type="reset">cancel</button>
+    </div>
+  </form>
+
+</dialog>
+<script>
+  const newFolderButton = document.querySelector('.new-folder-js')
+  const newFileButton = document.querySelector('.new-file-js')
+  const cancelDialogButton = document.querySelector('.cancel-dialog-js-1')
+  const cancelDialogButton2 = document.querySelector('.cancel-dialog-js-2')
+  const dialogFolderElement = document.querySelector('.folder-dialog')
+  const dialogFileElement = document.querySelector('.file-dialog')
+  newFolderButton.addEventListener("click", () => {
+    dialogFolderElement.style.display = 'flex'
+    dialogFolderElement.showModal()
+  })
+  cancelDialogButton.addEventListener("click", () => {
+    dialogFolderElement.style.display = 'none'
+    dialogFolderElement.close()
+  })
+  newFileButton.addEventListener("click", () => {
+    dialogFileElement.style.display = 'flex'
+    dialogFileElement.showModal()
+  })
+  cancelDialogButton2.addEventListener("click", () => {
+    dialogFileElement.style.display = 'none'
+    dialogFileElement.close()
+  })
+
+</script>
