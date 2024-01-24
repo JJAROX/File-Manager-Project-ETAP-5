@@ -13,7 +13,6 @@ let context = {
   files: [],
   folders: [],
 }
-
 app.use(express.urlencoded({
   extended: true
 }));
@@ -80,8 +79,8 @@ app.get("/", function (req, res) {
   if (!fs.existsSync(filepath)) {
     context.files.splice(0, context.files.length)
     context.folders.splice(0, context.folders.length)
+    context.Message = null
   } else {
-
   }
 
   console.log(context);
@@ -89,18 +88,25 @@ app.get("/", function (req, res) {
 })
 
 app.post("/savefile", (req, res) => {
-  fs.appendFile(path.join(__dirname, "upload", req.body.inputText), "", (err) => {
-    if (err) throw err
-    console.log("plik utworzony");
-    context.files.push(req.body.inputText)
+  if (!fs.existsSync(`upload/${req.body.inputText}`)) {
+    fs.appendFile(path.join(__dirname, "upload", req.body.inputText), "", (err) => {
+      if (err) throw err
+      console.log("plik utworzony");
+      context.files.push(req.body.inputText)
+      console.log(context);
+    })
+    fs.readdir(filepath, (err, files) => {
+      if (err) throw err
+      console.log("lista", files);
+    })
     console.log(context);
-  })
-  fs.readdir(filepath, (err, files) => {
-    if (err) throw err
-    console.log("lista", files);
-  })
-  console.log(context);
-  res.redirect('/');
+    context.Message = null
+    res.redirect('/');
+  } else {
+    context.Message = 'This file already exists'
+    res.redirect('/');
+  }
+
 })
 app.post("/savefolder", (req, res) => {
   if (!fs.existsSync(`upload/${req.body.inputText}`)) {
@@ -116,9 +122,11 @@ app.post("/savefolder", (req, res) => {
       console.log(context);
     })
     console.log(context)
+    context.Message = null
     res.redirect('/');
   } else {
-    res.render("folderExist.hbs", context)
+    context.Message = 'This folder already exists'
+    res.redirect('/');
   }
 
 

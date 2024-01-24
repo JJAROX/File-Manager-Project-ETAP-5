@@ -277,3 +277,37 @@
 .form-css {
   align-self: center;
 }
+
+.info-msg {
+  width: 100%;
+  background-color: lightcoral;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 10px;
+  position: relative;
+}
+
+.info-p {
+  padding: 10px;
+  font-size: 21px;
+}
+
+.info-btn {
+  position: absolute;
+  right: 15px;
+  margin: auto;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 21px;
+  color: black;
+  padding: 5px;
+}
+
+.info-btn:hover {
+  background-color: rgb(249, 44, 44);
+  color: white;
+}

@@ -12,6 +12,13 @@
 
   </div>
   <div class="side-folder-files">
+    {{#if Message}}
+    <div class="info-msg">
+      <p class="info-p">{{Message}}</p>
+      <button class="info-btn">X</button>
+    </div>
+    {{else}}
+    {{/if}}
     <div class="folders-div">
       {{#each folders}}
       <div class="folders">
@@ -65,6 +72,8 @@
   const cancelDialogButton2 = document.querySelector('.cancel-dialog-js-2')
   const dialogFolderElement = document.querySelector('.folder-dialog')
   const dialogFileElement = document.querySelector('.file-dialog')
+  const infoBtnElement = document.querySelector('.info-btn')
+  const divInfoElement = document.querySelector('.info-msg')
   newFolderButton.addEventListener("click", () => {
     dialogFolderElement.style.display = 'flex'
     dialogFolderElement.showModal()
@@ -80,6 +89,9 @@
   cancelDialogButton2.addEventListener("click", () => {
     dialogFileElement.style.display = 'none'
     dialogFileElement.close()
+  })
+  infoBtnElement.addEventListener("click", () => {
+    divInfoElement.style.display = 'none'
   })
 
 </script>
