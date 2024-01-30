@@ -19,13 +19,19 @@
     </div>
     {{else}}
     {{/if}}
+    <a href="/moveHome">home</a>
+    <a href="/move">{{root}}</a>
     <div class="folders-div">
       {{#each folders}}
       <div class="folders">
         <form class="form-css" method="get">
           <img src="../images/folder.png" alt="folders-img" class="folders-img">
           <button class="folders-btn" formaction="/deleteFolder" name="id" type="submit" value="{{this}}">X</button>
-          <p class=" folders-name"> {{this}}</p>
+          <br>
+          <div style="display: flex; justify-content:center;">
+            <button class="folders-name" formaction="/move" name="root" type="submit" value="{{root}}/{{this}}">
+              {{this}}</button>
+          </div>
         </form>
       </div>
       {{/each}}
@@ -46,6 +52,7 @@
 <dialog class="folder-dialog">
   <form action="/savefolder" method="post" class="dialog-form">
     <p class="dialog-p">nazwa nowego folderu</p>
+    <input type="hidden" name="root" value="{{root}}" />
     <input type="text" name="inputText" class="input-text">
     <div class="buttons-div">
       <button class="dialog-button" type="submit">ok</button>
@@ -57,6 +64,7 @@
 <dialog class="file-dialog">
   <form action="/savefile" method="post" class="dialog-form">
     <p class="dialog-p">nazwa nowego pliku</p>
+    <input type="hidden" name="root" value="{{root}}" />
     <input type="text" name="inputText" class="input-text">
     <div class="buttons-div">
       <button class="dialog-button" type="submit">ok</button>

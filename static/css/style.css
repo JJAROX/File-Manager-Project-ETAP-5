@@ -223,6 +223,15 @@
 
 .folders-name {
   text-align: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.folders-name:hover {
+  text-decoration: underline;
+  font-size: 14px;
+  color: rgb(248, 237, 34);
 }
 
 .folders-div {
