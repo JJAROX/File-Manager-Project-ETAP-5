@@ -320,3 +320,29 @@
   background-color: rgb(249, 44, 44);
   color: white;
 }
+
+.moveLink {
+  color: black;
+  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.moveLink:hover {
+  color: rgb(38, 88, 252);
+}
+
+.folderPathBtn {
+  border: none;
+  background-color: transparent;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.folderPathBtn:hover {
+  color: rgb(38, 88, 252);
+}
+
+.folderPathForm {
+  display: inline-flex;
+}
