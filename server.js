@@ -10,7 +10,7 @@ const { log } = require("console");
 let context = {
   files: [],
   folders: [],
-  root: 'upload'
+  root: 'upload',
 }
 let filepath = path.join(__dirname, "upload")
 app.use(express.urlencoded({
@@ -25,37 +25,6 @@ app.engine('hbs', hbs({
 
 }));
 app.set('view engine', 'hbs');
-
-app.engine('hbs', hbs({
-  defaultLayout: 'main.hbs',
-  helpers: {
-    getIconPath: function (fileName) {
-      const extension = fileName.split('.').pop();
-      switch (extension.toLowerCase()) {
-        case 'pdf':
-          return '../images/pdf.png';
-        case 'js':
-          return '../images/javascript.png';
-        case 'json':
-          return '../images/json-file.png';
-        case 'txt':
-          return '../images/txt.png';
-        case 'jpg':
-          return '../images/jpg.png';
-        case 'png':
-          return '../images/png.png';
-        default:
-          return '../images/file.png';
-      }
-    },
-  }
-}));
-
-app.use(express.static('static'))
-
-app.listen(PORT, function () {
-  console.log("start serwera na porcie " + PORT)
-})
 fs.readdir(filepath, (err, files) => {
   if (err) throw err
   console.log("lista", files);
@@ -75,6 +44,45 @@ fs.readdir(filepath, (err, files) => {
     })
   })
 })
+
+context.path = context.root.split('//')
+app.engine('hbs', hbs({
+  defaultLayout: 'main.hbs',
+  helpers: {
+    getIconPath: (fileName) => {
+      const extension = fileName.split('.').pop();
+      switch (extension.toLowerCase()) {
+        case 'pdf':
+          return '../images/pdf.png';
+        case 'js':
+          return '../images/javascript.png';
+        case 'json':
+          return '../images/json-file.png';
+        case 'txt':
+          return '../images/txt.png';
+        case 'jpg':
+          return '../images/jpg.png';
+        case 'png':
+          return '../images/png.png';
+        default:
+          return '../images/file.png';
+      }
+    },
+    currentPath: (currentPath) => {
+      currentPath = context.path
+      return currentPath.join('//')
+    }
+  }
+
+}));
+
+app.use(express.static('static'))
+
+app.listen(PORT, function () {
+  console.log("start serwera na porcie " + PORT)
+})
+
+
 app.get("/", function (req, res) {
   if (!fs.existsSync(filepath)) {
     context.files.splice(0, context.files.length)
@@ -98,6 +106,7 @@ app.post("/savefile", (req, res) => {
     })
     fs.readdir(filepath, (err, files) => {
       if (err) throw err
+      context.path = context.root.split('//')
       context.folders = []
       context.files = []
       files.forEach((file) => {
@@ -131,6 +140,7 @@ app.post("/savefolder", (req, res) => {
     console.log(req.body.inputText);
     fs.readdir(filepath, (err, files) => {
       if (err) throw err
+      context.path = context.root.split('//')
       context.files = []
       context.folders = []
       files.forEach((file) => {
@@ -204,6 +214,7 @@ app.get('/deleteFolder', (req, res) => {
         files: [],
         folders: []
       }
+      context.path = context.root.split('//')
       fs.readdir(filepath, (err, files) => {
         if (err) throw err
         files.forEach((file) => {
@@ -236,6 +247,7 @@ app.get('/deleteFile', (req, res) => {
         files: [],
         folders: []
       }
+      context.path = context.root.split('//')
       fs.readdir(filepath, (err, files) => {
         if (err) throw err
         files.forEach((file) => {
@@ -260,11 +272,12 @@ app.get('/deleteFile', (req, res) => {
 })
 
 app.get('/move', (req, res) => {
-  context.root = `${context.root}/${req.query.root}`
+  context.root = `${context.path.join('//')}/${req.query.root}`
   filepath = path.join(__dirname, `${context.root}`)
   console.log(req.query);
   fs.readdir(filepath, (err, files) => {
     if (err) throw err
+    context.path = context.root.split('//')
     context.folders = []
     context.files = []
     files.forEach((file) => {
@@ -289,6 +302,7 @@ app.get('/moveHome', (req, res) => {
   context.root = 'upload'
   fs.readdir(filepath, (err, files) => {
     if (err) throw err
+    context.path = context.root.split('//')
     context.folders = []
     context.files = []
     files.forEach((file) => {
@@ -307,4 +321,8 @@ app.get('/moveHome', (req, res) => {
     })
   })
   res.redirect('/')
+})
+app.get('/moveToPath', (req, res) => {
+  console.log(req.query.folderPath);
+  res.send(req.query.folderPath)
 })
