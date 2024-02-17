@@ -320,3 +320,16 @@
   background-color: rgb(249, 44, 44);
   color: white;
 }
+
+.path-button {
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
+  text-decoration: underline;
+  color: #551A8B;
+  cursor: pointer;
+}
+
+a {
+  font-size: 16px;
+}

@@ -10,8 +10,52 @@ const { log } = require("console");
 let context = {
   files: [],
   folders: [],
-  root: 'upload'
+  root: 'upload',
+  paths: []
 }
+
+
+
+function changePath(filepath, context) {
+  fs.readdir(filepath, (err, files) => {
+    if (err) throw err
+    context.folders = []
+    context.files = []
+    files.forEach((file) => {
+      const fullPath = path.join(filepath, file)
+      fs.lstat(fullPath, (err, stats) => {
+        // console.log(file, stats.isDirectory())
+        if (stats.isDirectory()) {
+
+          context.folders.push(file)
+        } else {
+
+          context.files.push(file)
+        }
+        console.log(context)
+      })
+    })
+  })
+}
+
+function filesFoldersPush(filepath, context) {
+  fs.readdir(filepath, (err, files) => {
+    if (err) throw err
+    files.forEach((file) => {
+      const fullPath = path.join(filepath, file)
+      fs.lstat(fullPath, (err, stats) => {
+        console.log(file, stats.isDirectory())
+        if (stats.isDirectory()) {
+          context.folders.push(file)
+        } else {
+          context.files.push(file)
+        }
+        console.log(context)
+      })
+    })
+  })
+}
+
 let filepath = path.join(__dirname, "upload")
 app.use(express.urlencoded({
   extended: true
@@ -48,6 +92,10 @@ app.engine('hbs', hbs({
           return '../images/file.png';
       }
     },
+    getNamePath: function (path) {
+      const segments = path.split('//');
+      return segments[segments.length - 1];
+    }
   }
 }));
 
@@ -79,6 +127,14 @@ app.get("/", function (req, res) {
   if (!fs.existsSync(filepath)) {
     context.files.splice(0, context.files.length)
     context.folders.splice(0, context.folders.length)
+    const rootSegments = context.root.split('//');
+    let currentPath = '';
+    rootSegments.forEach((segment) => {
+      currentPath = currentPath ? `${currentPath}//${segment}` : segment;
+      if (currentPath !== 'upload') {
+        context.paths.push(currentPath);
+      }
+    });
     context.Message = null
   } else {
 
@@ -100,6 +156,7 @@ app.post("/savefile", (req, res) => {
       if (err) throw err
       context.folders = []
       context.files = []
+      context.paths = []
       files.forEach((file) => {
         const fullPath = path.join(filepath, file)
         fs.lstat(fullPath, (err, stats) => {
@@ -133,6 +190,15 @@ app.post("/savefolder", (req, res) => {
       if (err) throw err
       context.files = []
       context.folders = []
+      context.paths = []
+      const rootSegments = context.root.split('//');
+      let currentPath = '';
+      rootSegments.forEach((segment) => {
+        currentPath = currentPath ? `${currentPath}//${segment}` : segment;
+        if (currentPath !== 'upload') {
+          context.paths.push(currentPath);
+        }
+      });
       files.forEach((file) => {
         const fullPath = path.join(filepath, file)
         fs.lstat(fullPath, (err, stats) => {
@@ -202,25 +268,11 @@ app.get('/deleteFolder', (req, res) => {
       console.log("czas 1: " + new Date().getMilliseconds());
       context = {
         files: [],
-        folders: []
+        folders: [],
       }
-      fs.readdir(filepath, (err, files) => {
-        if (err) throw err
-        files.forEach((file) => {
-          const fullPath = path.join(filepath, file)
-          fs.lstat(fullPath, (err, stats) => {
-            console.log(file, stats.isDirectory())
-            if (stats.isDirectory()) {
-              context.folders.push(file)
-            } else {
-              context.files.push(file)
-            }
-            console.log(context)
-          })
-        })
-      })
+      console.log(context);
+      console.log(req.query.id);
     })
-
   } else {
     console.log('ŁOT');
   }
@@ -234,23 +286,9 @@ app.get('/deleteFile', (req, res) => {
       console.log("czas 1: " + new Date().getMilliseconds());
       context = {
         files: [],
-        folders: []
+        folders: [],
       }
-      fs.readdir(filepath, (err, files) => {
-        if (err) throw err
-        files.forEach((file) => {
-          const fullPath = path.join(filepath, file)
-          fs.lstat(fullPath, (err, stats) => {
-            console.log(file, stats.isDirectory())
-            if (stats.isDirectory()) {
-              context.folders.push(file)
-            } else {
-              context.files.push(file)
-            }
-            console.log(context)
-          })
-        })
-      })
+      filesFoldersPush(filepath, context)
     })
 
   } else {
@@ -260,51 +298,41 @@ app.get('/deleteFile', (req, res) => {
 })
 
 app.get('/move', (req, res) => {
+  console.log(req.query);
   context.root = `${context.root}/${req.query.root}`
   filepath = path.join(__dirname, `${context.root}`)
-  console.log(req.query);
-  fs.readdir(filepath, (err, files) => {
-    if (err) throw err
-    context.folders = []
-    context.files = []
-    files.forEach((file) => {
-      const fullPath = path.join(filepath, file)
-      fs.lstat(fullPath, (err, stats) => {
-        console.log(file, stats.isDirectory())
-        if (stats.isDirectory()) {
-
-          context.folders.push(file)
-        } else {
-
-          context.files.push(file)
-        }
-        console.log(context)
-      })
-    })
-  })
+  context.paths = []
+  const rootSegments = context.root.split('//');
+  let currentPath = '';
+  rootSegments.forEach((segment) => {
+    currentPath = currentPath ? `${currentPath}//${segment}` : segment;
+    if (currentPath !== 'upload') {
+      context.paths.push(currentPath);
+    }
+  });
+  changePath(filepath, context)
   res.redirect('/')
 })
 app.get('/moveHome', (req, res) => {
+  context.paths = []
   filepath = path.join(__dirname, `upload`)
   context.root = 'upload'
-  fs.readdir(filepath, (err, files) => {
-    if (err) throw err
-    context.folders = []
-    context.files = []
-    files.forEach((file) => {
-      const fullPath = path.join(filepath, file)
-      fs.lstat(fullPath, (err, stats) => {
-        console.log(file, stats.isDirectory())
-        if (stats.isDirectory()) {
-
-          context.folders.push(file)
-        } else {
-
-          context.files.push(file)
-        }
-        console.log(context)
-      })
-    })
-  })
+  changePath(filepath, context)
+  res.redirect('/')
+})
+app.get('/pathChange', (req, res) => {
+  console.log(req.query.path);
+  context.root = req.query.path
+  context.paths = []
+  const rootSegments = context.root.split('//');
+  let currentPath = '';
+  rootSegments.forEach((segment) => {
+    currentPath = currentPath ? `${currentPath}//${segment}` : segment;
+    if (currentPath !== 'upload') {
+      context.paths.push(currentPath);
+    }
+  });
+  filepath = path.join(__dirname, `${context.root}`)
+  changePath(filepath, context)
   res.redirect('/')
 })

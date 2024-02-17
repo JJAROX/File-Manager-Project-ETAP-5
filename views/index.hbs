@@ -19,8 +19,16 @@
     </div>
     {{else}}
     {{/if}}
-    <a href="/moveHome">home</a>
-    <a href="/move">{{root}}</a>
+    <form method="get">
+      <a href="/moveHome">home</a>
+      {{#each paths}}
+      &gt;<button class="path-button" formaction="/pathChange" name="path" type="submit" value="{{this}}">{{getNamePath
+        this}}</button>
+      {{/each}}
+    </form>
+    {{!-- <a href=" /move" name="{{this}}">{{this}}</a> --}}
+
+    </form>
     <div class="folders-div">
       {{#each folders}}
       <div class="folders">
