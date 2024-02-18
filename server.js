@@ -56,7 +56,7 @@ function filesFoldersPush(filepath, context) {
   })
 }
 
-let filepath = path.join(__dirname, "upload")
+let filepath = path.join(__dirname, context.root || "upload")
 app.use(express.urlencoded({
   extended: true
 }));
@@ -135,6 +135,9 @@ app.get("/", function (req, res) {
         context.paths.push(currentPath);
       }
     });
+    if (!context.root.includes('//')) {
+      context.paths.push(context.root);
+    }
     context.Message = null
   } else {
 
@@ -157,6 +160,17 @@ app.post("/savefile", (req, res) => {
       context.folders = []
       context.files = []
       context.paths = []
+      const rootSegments = context.root.split('//');
+      let currentPath = '';
+      rootSegments.forEach((segment) => {
+        currentPath = currentPath ? `${currentPath}//${segment}` : segment;
+        if (currentPath !== 'upload') {
+          context.paths.push(currentPath);
+        }
+      });
+      if (!context.root.includes('//')) {
+        context.paths.push(context.root);
+      }
       files.forEach((file) => {
         const fullPath = path.join(filepath, file)
         fs.lstat(fullPath, (err, stats) => {
@@ -199,6 +213,9 @@ app.post("/savefolder", (req, res) => {
           context.paths.push(currentPath);
         }
       });
+      if (!context.root.includes('//')) {
+        context.paths.push(context.root);
+      }
       files.forEach((file) => {
         const fullPath = path.join(filepath, file)
         fs.lstat(fullPath, (err, stats) => {
@@ -262,6 +279,9 @@ app.post('/upload', (req, res) => {
 })
 app.get('/deleteFolder', (req, res) => {
   console.log(req.query);
+  console.log(filepath);
+  console.log(context);
+  let root = context.root
   if (fs.existsSync(`${filepath}/${req.query.id}`)) {
     fs.rmdir(`${filepath}/${req.query.id}`, (err) => {
       if (err) throw err
@@ -269,7 +289,21 @@ app.get('/deleteFolder', (req, res) => {
       context = {
         files: [],
         folders: [],
+        paths: []
       }
+      context.root = root
+      const rootSegments = context.root.split('//');
+      let currentPath = '';
+      rootSegments.forEach((segment) => {
+        currentPath = currentPath ? `${currentPath}//${segment}` : segment;
+        if (currentPath !== 'upload') {
+          context.paths.push(currentPath);
+        }
+      });
+      if (!context.root.includes('//')) {
+        context.paths.push(context.root);
+      }
+      filesFoldersPush(filepath, context)
       console.log(context);
       console.log(req.query.id);
     })
@@ -280,6 +314,7 @@ app.get('/deleteFolder', (req, res) => {
 })
 app.get('/deleteFile', (req, res) => {
   console.log(req.query.id);
+  let root = context.root
   if (fs.existsSync(`${filepath}/${req.query.id}`)) {
     fs.unlink(`${filepath}/${req.query.id}`, (err) => {
       if (err) throw err
@@ -287,8 +322,22 @@ app.get('/deleteFile', (req, res) => {
       context = {
         files: [],
         folders: [],
+        paths: []
+      }
+      context.root = root
+      const rootSegments = context.root.split('//');
+      let currentPath = '';
+      rootSegments.forEach((segment) => {
+        currentPath = currentPath ? `${currentPath}//${segment}` : segment;
+        if (currentPath !== 'upload') {
+          context.paths.push(currentPath);
+        }
+      });
+      if (!context.root.includes('//')) {
+        context.paths.push(context.root);
       }
       filesFoldersPush(filepath, context)
+      console.log(context);
     })
 
   } else {
@@ -310,6 +359,9 @@ app.get('/move', (req, res) => {
       context.paths.push(currentPath);
     }
   });
+  if (!context.root.includes('//')) {
+    context.paths.push(context.root);
+  }
   changePath(filepath, context)
   res.redirect('/')
 })
@@ -332,6 +384,9 @@ app.get('/pathChange', (req, res) => {
       context.paths.push(currentPath);
     }
   });
+  if (!context.root.includes('//')) {
+    context.paths.push(context.root);
+  }
   filepath = path.join(__dirname, `${context.root}`)
   changePath(filepath, context)
   res.redirect('/')

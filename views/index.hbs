@@ -32,9 +32,9 @@
     <div class="folders-div">
       {{#each folders}}
       <div class="folders">
-        <form class="form-css" method="get">
+        <form action="/deleteFolder" class="form-css delete-folder" method="get">
           <img src="../images/folder.png" alt="folders-img" class="folders-img">
-          <button class="folders-btn" formaction="/deleteFolder" name="id" type="submit" value="{{this}}">X</button>
+          <button onclick="deleteFolder() " class="folders-btn" name="id" type="button" value="{{this}}">X</button>
           <br>
           <div style="display: flex; justify-content:center;">
             <button class="folders-name" formaction="/move" name="root" type="submit" value="{{root}}/{{this}}">
@@ -47,9 +47,9 @@
     <div class="files-div">
       {{#each files}}
       <div class="files">
-        <form class="form-css" method="get">
+        <form class="form-css delete-form" action="/deleteFile" method="get">
           <img src="{{getIconPath this}}" alt="files-img" class="files-img">
-          <button class="files-btn" formaction="/deleteFile" name="id" type="submit" value="{{this}}">X</button>
+          <button onclick="deleteFile()" class="files-btn" name="id" type="button" value="{{this}}">X</button>
           <p class="files-name"> {{this}}</p>
         </form>
       </div>
@@ -90,6 +90,8 @@
   const dialogFileElement = document.querySelector('.file-dialog')
   const infoBtnElement = document.querySelector('.info-btn')
   const divInfoElement = document.querySelector('.info-msg')
+  const deleteBtn = document.querySelector('.files-btn')
+  const deleteBtn2 = document.querySelector('.folders-btn')
   newFolderButton.addEventListener("click", () => {
     dialogFolderElement.style.display = 'flex'
     dialogFolderElement.showModal()
@@ -109,5 +111,22 @@
   infoBtnElement.addEventListener("click", () => {
     divInfoElement.style.display = 'none'
   })
-
+  function deleteFile() {
+    const confirmAlert = window.confirm("Czy chcesz na pewno usunąć ten plik?")
+    const form = document.querySelector('.delete-form')
+    if (confirmAlert === true) {
+      deleteBtn.type = 'submit'
+      form.submit()
+    } else {
+    }
+  }
+  function deleteFolder() {
+    const confirmAlert = window.confirm("Czy chcesz na pewno usunąć ten folder?")
+    const form = document.querySelector('.delete-folder')
+    if (confirmAlert === true) {
+      deleteBtn2.type = 'submit'
+      form.submit()
+    } else {
+    }
+  }
 </script>
