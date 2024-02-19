@@ -277,13 +277,13 @@ app.post('/upload', (req, res) => {
   console.log(context)
   res.redirect('/');
 })
-app.get('/deleteFolder', (req, res) => {
-  console.log(req.query);
+app.post('/deleteFolder', (req, res) => {
+  console.log(req.body);
   console.log(filepath);
   console.log(context);
   let root = context.root
-  if (fs.existsSync(`${filepath}/${req.query.id}`)) {
-    fs.rmdir(`${filepath}/${req.query.id}`, (err) => {
+  if (fs.existsSync(`${filepath}/${req.body.id}`)) {
+    fs.rmdir(`${filepath}/${req.body.id}`, (err) => {
       if (err) throw err
       console.log("czas 1: " + new Date().getMilliseconds());
       context = {
@@ -305,18 +305,16 @@ app.get('/deleteFolder', (req, res) => {
       }
       filesFoldersPush(filepath, context)
       console.log(context);
-      console.log(req.query.id);
+      console.log(req.body.id);
     })
-  } else {
-    console.log('ŁOT');
   }
   res.redirect('/');
 })
-app.get('/deleteFile', (req, res) => {
-  console.log(req.query.id);
+app.post('/deleteFile', (req, res) => {
+  console.log(req.body.id);
   let root = context.root
-  if (fs.existsSync(`${filepath}/${req.query.id}`)) {
-    fs.unlink(`${filepath}/${req.query.id}`, (err) => {
+  if (fs.existsSync(`${filepath}/${req.body.id}`)) {
+    fs.unlink(`${filepath}/${req.body.id}`, (err) => {
       if (err) throw err
       console.log("czas 1: " + new Date().getMilliseconds());
       context = {
@@ -340,15 +338,13 @@ app.get('/deleteFile', (req, res) => {
       console.log(context);
     })
 
-  } else {
-    console.log('ŁOT');
   }
   res.redirect('/');
 })
 
-app.get('/move', (req, res) => {
-  console.log(req.query);
-  context.root = `${context.root}/${req.query.root}`
+app.post('/move', (req, res) => {
+  console.log(req.body);
+  context.root = `${context.root}/${req.body.root}`
   filepath = path.join(__dirname, `${context.root}`)
   context.paths = []
   const rootSegments = context.root.split('//');
@@ -372,9 +368,9 @@ app.get('/moveHome', (req, res) => {
   changePath(filepath, context)
   res.redirect('/')
 })
-app.get('/pathChange', (req, res) => {
-  console.log(req.query.path);
-  context.root = req.query.path
+app.post('/pathChange', (req, res) => {
+  console.log(req.body.path);
+  context.root = req.body.path
   context.paths = []
   const rootSegments = context.root.split('//');
   let currentPath = '';

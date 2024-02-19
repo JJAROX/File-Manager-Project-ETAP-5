@@ -19,7 +19,7 @@
     </div>
     {{else}}
     {{/if}}
-    <form method="get">
+    <form method="post">
       <a href="/moveHome">home</a>
       {{#each paths}}
       &gt;<button class="path-button" formaction="/pathChange" name="path" type="submit" value="{{this}}">{{getNamePath
@@ -32,9 +32,10 @@
     <div class="folders-div">
       {{#each folders}}
       <div class="folders">
-        <form action="/deleteFolder" class="form-css delete-folder" method="get">
+        <form action="/deleteFolder" class="form-css delete-folder" method="post">
           <img src="../images/folder.png" alt="folders-img" class="folders-img">
-          <button onclick="deleteFolder() " class="folders-btn" name="id" type="button" value="{{this}}">X</button>
+          <button onclick="deleteFolder() " class="folders-btn" type="button">X</button>
+          <input type="hidden" name="id" value="{{this}}">
           <br>
           <div style="display: flex; justify-content:center;">
             <button class="folders-name" formaction="/move" name="root" type="submit" value="{{root}}/{{this}}">
@@ -47,10 +48,11 @@
     <div class="files-div">
       {{#each files}}
       <div class="files">
-        <form class="form-css delete-form" action="/deleteFile" method="get">
+        <form action="/deleteFile" class="form-css delete-form" method="post">
           <img src="{{getIconPath this}}" alt="files-img" class="files-img">
-          <button onclick="deleteFile()" class="files-btn" name="id" type="button" value="{{this}}">X</button>
+          <button onclick="deleteFile()" class="files-btn" type="button">X</button>
           <p class="files-name"> {{this}}</p>
+          <input type="hidden" name="id" value="{{this}}">
         </form>
       </div>
       {{/each}}
