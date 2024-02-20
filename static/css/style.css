@@ -90,6 +90,22 @@
   position: relative;
 }
 
+.edit-folder-dialog {
+  margin: auto;
+  width: 70vh;
+  height: 25vh;
+  background-image: url("/images/bg.jpg");
+  border-radius: 5px;
+  border: none;
+  color: white;
+  display: none;
+  position: relative;
+}
+
+.change-rootname {
+  color: #fada24;
+}
+
 .dialog-form {
   display: flex;
   flex-direction: column;

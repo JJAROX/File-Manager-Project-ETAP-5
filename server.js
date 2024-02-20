@@ -74,28 +74,28 @@ app.engine('hbs', hbs({
   defaultLayout: 'main.hbs',
   helpers: {
     getIconPath: function (fileName) {
-      const extension = fileName.split('.').pop();
+      const extension = fileName.split('.').pop()
       switch (extension.toLowerCase()) {
         case 'pdf':
-          return '../images/pdf.png';
+          return '../images/pdf.png'
         case 'js':
-          return '../images/javascript.png';
+          return '../images/javascript.png'
         case 'json':
-          return '../images/json-file.png';
+          return '../images/json-file.png'
         case 'txt':
-          return '../images/txt.png';
+          return '../images/txt.png'
         case 'jpg':
-          return '../images/jpg.png';
+          return '../images/jpg.png'
         case 'png':
-          return '../images/png.png';
+          return '../images/png.png'
         default:
-          return '../images/file.png';
+          return '../images/file.png'
       }
     },
     getNamePath: function (path) {
-      const segments = path.split('//');
-      return segments[segments.length - 1];
-    }
+      const segments = path.split('//')
+      return segments[segments.length - 1]
+    },
   }
 }));
 
@@ -125,8 +125,8 @@ fs.readdir(filepath, (err, files) => {
 })
 app.get("/", function (req, res) {
   if (!fs.existsSync(filepath)) {
-    context.files.splice(0, context.files.length)
-    context.folders.splice(0, context.folders.length)
+    // context.files.splice(0, context.files.length)
+    // context.folders.splice(0, context.folders.length)
     const rootSegments = context.root.split('//');
     let currentPath = '';
     rootSegments.forEach((segment) => {
@@ -142,8 +142,6 @@ app.get("/", function (req, res) {
   } else {
 
   }
-
-  console.log(context);
   res.render('index.hbs', context);
 })
 
@@ -168,9 +166,9 @@ app.post("/savefile", (req, res) => {
           context.paths.push(currentPath);
         }
       });
-      if (!context.root.includes('//')) {
-        context.paths.push(context.root);
-      }
+      // if (!context.root.includes('//')) {
+      //   context.paths.push(context.root);
+      // }
       files.forEach((file) => {
         const fullPath = path.join(filepath, file)
         fs.lstat(fullPath, (err, stats) => {
@@ -213,9 +211,9 @@ app.post("/savefolder", (req, res) => {
           context.paths.push(currentPath);
         }
       });
-      if (!context.root.includes('//')) {
-        context.paths.push(context.root);
-      }
+      // if (!context.root.includes('//')) {
+      //   context.paths.push(context.root);
+      // }
       files.forEach((file) => {
         const fullPath = path.join(filepath, file)
         fs.lstat(fullPath, (err, stats) => {
@@ -239,6 +237,30 @@ app.post("/savefolder", (req, res) => {
 
 
 })
+
+app.post('/changeFolderName', (req, res) => {
+  const newPath = context.root.split('//')
+  newPath[newPath.length - 1] = req.body.inputText
+  const editedPath = newPath.join('//')
+  console.log(editedPath);
+  if (fs.existsSync(`${req.body.root}`)) {
+    fs.rename(req.body.root, editedPath, (err) => {
+      if (err) console.log(err)
+      context = {
+        paths: []
+      }
+      context.root = editedPath
+      const editedPath2 = path.join(__dirname, editedPath)
+      changePath(editedPath2, context)
+      // if (!context.root.includes('//')) {
+      //   context.paths.push(context.root);
+      // }
+      console.log(context);
+      res.redirect('/')
+    })
+  }
+})
+
 app.post('/upload', (req, res) => {
   let form = formidable({});
   form.keepExtensions = true;
@@ -283,7 +305,7 @@ app.post('/deleteFolder', (req, res) => {
   console.log(context);
   let root = context.root
   if (fs.existsSync(`${filepath}/${req.body.id}`)) {
-    fs.rmdir(`${filepath}/${req.body.id}`, (err) => {
+    fs.rm(`${filepath}/${req.body.id}`, { recursive: true }, (err) => {
       if (err) throw err
       console.log("czas 1: " + new Date().getMilliseconds());
       context = {
@@ -300,9 +322,9 @@ app.post('/deleteFolder', (req, res) => {
           context.paths.push(currentPath);
         }
       });
-      if (!context.root.includes('//')) {
-        context.paths.push(context.root);
-      }
+      // if (!context.root.includes('//')) {
+      //   context.paths.push(context.root);
+      // }
       filesFoldersPush(filepath, context)
       console.log(context);
       console.log(req.body.id);
@@ -331,9 +353,9 @@ app.post('/deleteFile', (req, res) => {
           context.paths.push(currentPath);
         }
       });
-      if (!context.root.includes('//')) {
-        context.paths.push(context.root);
-      }
+      // if (!context.root.includes('//')) {
+      //   context.paths.push(context.root);
+      // }
       filesFoldersPush(filepath, context)
       console.log(context);
     })
