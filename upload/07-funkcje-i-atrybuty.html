@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>07-funkcje-i-atrybuty</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="app">
+    <h1 class="vue-title">{{ title }}</h1>
+    <h2 class="vue-message">{{ message }}</h2>
+    <a :href="getLink()">
+      <img :src="getImage()" alt="logo_vue" height="100" width="100">
+    </a>
+    <a v-bind:href="getLink()">
+      <img v-bind:src="getImage()" alt="logo_vue" height="100" width="100">
+    </a>
+    <hr>
+    <h3 class="exercise">zadanie:</h3>
+    <div style="display: flex;">
+      <div :class="getClass({id,model,type,year,img})" v-for="{id,model,type,year,img} in cars">
+        <p v-text="getCarInfo({id,model,type,year,img})"></p>
+        <img :src="getCarImage({id,model,type,year,img})" alt="samochód" height="90" width="165">
+      </div>
+    </div>
+
+  </div>
+  <script>
+    const app = Vue.createApp({
+
+      data() {
+        return {
+          title: "07: Funkcje i atrybuty",
+          message: 'v-bind => jak połączyć atrybut z wynikiem działania funkcji',
+          link: "https://vuejs.org/",
+          image: "https://vuejs.org/images/logo.png",
+          cars: [
+            { id: 1, model: "Mercedes", type: "Benz-W124", year: 1984, img: '/gfx/benz-w124.jpg' },
+            { id: 2, model: "Opel", type: "Corsa", year: 2010, img: '/gfx/corsa2010.jpg' },
+            { id: 3, model: "Peugeot", type: "308", year: 2008, img: '/gfx/peageot.jpg' },
+            { id: 4, model: "Mercedes", type: "Benz-W140", year: 1991, img: '/gfx/benz-w140.jpg' },
+            { id: 5, model: "BMW", type: "E46", year: 1998, img: '/gfx/bmw.jpg' }
+          ],
+        }
+      },
+      methods: {
+        getCarInfo(obj) {
+          return obj.model + '-' + obj.type + '-' + obj.year
+        },
+        getImage() {
+          return this.image
+        },
+        getLink() {
+          return this.link
+        },
+        getCarImage(obj) {
+          return obj.img
+        },
+        getClass(obj) {
+          if (obj.year < 2000) {
+            return 'car-div'
+          } else {
+            return 'car-div2'
+          }
+        }
+      }
+
+    }).mount("#app")
+  </script>
+</body>
+
+</html>

@@ -41,7 +41,7 @@
           <button onclick="deleteFolder('{{this}}') " class="folders-btn" type="button">X</button>
           <br>
           <div style="display: flex; justify-content:center;">
-            <button class="folders-name" formaction="/move" name="root" type="submit" value="{{root}}/{{this}}">
+            <button class="folders-name" formaction="/move" name="root" type="submit" value="/{{this}}">
               {{this}}</button>
           </div>
         </form>
@@ -54,7 +54,9 @@
         <form action="/deleteFile" class="form-css delete-form" method="post">
           <img src="{{getIconPath this}}" alt="files-img" class="files-img">
           <button onclick="deleteFile('{{this}}')" class="files-btn" type="button">X</button>
-          <p class="files-name"> {{this}}</p>
+          <br>
+          <button class="folders-name" formaction="/showFile" name="root" type="submit" value="{{root}}/{{this}}">
+            {{this}}</button>
           <input class="hidden-js" type="hidden" name="id" value="{{this}}">
         </form>
       </div>

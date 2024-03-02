@@ -11,7 +11,9 @@ let context = {
   files: [],
   folders: [],
   root: 'upload',
-  paths: []
+  paths: [],
+  fileRoot: null,
+  fileContent: ''
 }
 
 
@@ -88,6 +90,8 @@ app.engine('hbs', hbs({
           return '../images/jpg.png'
         case 'png':
           return '../images/png.png'
+        case 'html':
+          return '../images/html.png'
         default:
           return '../images/file.png'
       }
@@ -260,7 +264,18 @@ app.post('/changeFolderName', (req, res) => {
     })
   }
 })
+app.post('/showFile', (req, res) => {
+  context.fileRoot = `${req.body.root}`
+  console.log(context.fileRoot);
+  console.log(req.body);
+  fs.readFile(`${filepath}/${req.body.root}`, "utf-8", (err, data) => {
+    if (err) throw err
+    console.log(data.toString());
+    context.fileContent = data.toString()
+    res.render('showFile.hbs', context);
+  })
 
+})
 app.post('/upload', (req, res) => {
   let form = formidable({});
   form.keepExtensions = true;
@@ -328,9 +343,10 @@ app.post('/deleteFolder', (req, res) => {
       filesFoldersPush(filepath, context)
       console.log(context);
       console.log(req.body.id);
+      res.redirect('/');
     })
   }
-  res.redirect('/');
+
 })
 app.post('/deleteFile', (req, res) => {
   console.log(req.body.id);

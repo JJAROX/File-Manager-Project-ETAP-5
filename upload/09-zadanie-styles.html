@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>09-zadanie-2</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="app">
+    <h1 class="vue-title">{{ title }}</h1>
+    <h2 class="vue-message">{{ message }}</h2>
+    <div style="display: inline-flex;">
+      <div :class="getClass" v-for="{ id, klass } in array.filter(getItems)">
+        <h1 v-text="getItems({id,klass})"></h1>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const app = Vue.createApp({
+
+      data() {
+        return {
+          title: "09: Zadanie 2",
+          message: 'klasy css i v-for => app.start(), app.stop() z konsoli',
+          array: [
+            { id: 1, klass: "red" },
+            { id: 2, klass: "blue" },
+            { id: 3, klass: "red" },
+            { id: 4, klass: "blue" },
+            { id: 5, klass: "red" },
+
+          ],
+          data: 0,
+          interval: null
+        }
+      },
+      methods: {
+        start() {
+          this.interval = setInterval(() => {
+            this.data++
+            console.log(this.data);
+            console.log(this.array);
+          }, 2000);
+        },
+        stop() {
+          clearInterval(this.interval)
+        },
+        getItems(obj) {
+          if (this.data % 2 === 0) {
+            if (obj.id % 2 !== 0) {
+              return obj.id
+            }
+          } else {
+            if (obj.id % 2 === 0) {
+              return obj.id
+            }
+          }
+
+        }
+      },
+      computed: {
+        getClass() {
+          if (this.data % 2 === 0) {
+            return 'red'
+          } else {
+            return 'blue'
+          }
+        },
+      }
+
+
+
+    }).mount("#app")
+  </script>
+</body>
+
+</html>

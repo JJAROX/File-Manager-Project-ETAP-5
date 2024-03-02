@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>03-dyrektywy-v-for-obiekty</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="app">
+    <h1 class="vue-title">{{ title }}</h1>
+    <h2 class="vue-message">{{ message }}</h2>
+    <h3 class="exercise">ul 1 - value key obiektu</h3>
+    <ul class="vue-ul">
+      <li v-for="(value,key) in object">{{key}} - {{value}}</li>
+    </ul>
+    <h3 class="exercise">ul 2 - key value index obiektu</h3>
+    <ul class="vue-ul">
+      <li v-for="(value,key,index) in object">{{index}} - {{key}} - {{value}} </li>
+    </ul>
+  </div>
+  <script>
+    const app = Vue.createApp({
+
+      data() {
+        return {
+          title: "03: Dyrektywy VueJS",
+          message: 'Dyrektywa v-for - iteracja po key, value, indeksie obiektu',
+          object: {
+            a: 111,
+            b: 222,
+            c: 333
+          }
+        }
+      }
+    }).mount("#app")
+  </script>
+</body>
+
+</html>

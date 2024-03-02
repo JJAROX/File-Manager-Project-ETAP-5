@@ -349,3 +349,131 @@
 a {
   font-size: 16px;
 }
+
+.files-showfile-href {
+  color: black;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  text-decoration: none;
+}
+
+.files-showfile-href:hover {
+  text-decoration: underline;
+  font-size: 14px;
+  color: rgb(248, 237, 34);
+}
+
+.showfile-btns-div {
+  margin-top: 5px;
+  display: inline-flex;
+  width: 15.6rem;
+  justify-content: center;
+  height: 2.5rem;
+}
+
+.showfile-btns-div button {
+  padding: 5px;
+}
+
+.font-minus {
+  background-color: rgb(248, 237, 34);
+  border: none;
+  border-radius: 10px 0 0 10px;
+  cursor: pointer;
+}
+
+.colors {
+  background-color: rgb(248, 166, 34);
+  border: none;
+  cursor: pointer;
+}
+
+.font-plus {
+  background-color: rgb(248, 98, 34);
+  border: none;
+  border-radius: 0 10px 10px 0;
+  cursor: pointer;
+}
+
+.file-preview {
+  color: white;
+  border: none;
+  border-radius: 25px;
+  height: 6vh;
+  margin-top: 10px;
+  text-decoration: underline;
+  background-color: #2444fa;
+  font-weight: 600;
+  width: 13vw;
+  cursor: pointer;
+  font-size: 1vi;
+  transition: 0.25s ease-in-out;
+}
+
+.file-preview:hover {
+  background-color: #677efe;
+  color: black;
+}
+
+textarea {
+  font-family: Arial, Helvetica, sans-serif;
+  border: none;
+  border-left: 3px solid green;
+  margin-left: 28px;
+  color: black;
+  width: 89vw;
+  font-size: 15px;
+  height: 33rem;
+}
+
+.file-path-name {
+  background-color: rgb(82, 81, 81);
+  height: 1.5rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  width: 103%;
+}
+
+.file-path-name p {
+  color: white;
+  font-size: 1rem;
+  margin-left: 5px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.side-files {
+  width: 85vw;
+}
+
+.numbering {
+  font-family: Arial, Helvetica, sans-serif;
+  width: 1.94vw;
+  float: left;
+  position: absolute;
+  color: rgba(32, 189, 189, 0.663);
+  font-size: 14.4px;
+  height: 32.5rem;
+  text-align: center;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.numbering::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+.side-info-2 {
+  background-color: lightgray;
+  height: 88vh;
+  width: 15vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+body {
+  overflow: hidden;
+}

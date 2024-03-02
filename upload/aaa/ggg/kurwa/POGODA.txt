@@ -1,0 +1,43 @@
+const tab = [
+                { id: 1, c1: "f6ac55", c2: "fa8a02", name: "pn"},
+                { id: 2, c1: "3dc6f4", c2: "0ebaea", name: "wt"},
+                { id: 3, c1: "abd66d", c2: "9fc25e", name: "sr"},
+                { id: 4, c1: "f05156", c2: "ff0000", name: "cz"},
+                { id: 5, c1: "f8a0c6", c2: "ff79aa", name: "pt"},
+                { id: 6, c1: "a06db0", c2: "984190", name: "sb"},
+                { id: 7, c1: "fdd542", c2: "f5c300", name: "nd" }
+         ] 
+
+
+http://admins.spec.pl.hostingasp.pl/Stefa%C5%84czyk_Dariusz/temp/weather/storm.png
+http://admins.spec.pl.hostingasp.pl/Stefa%C5%84czyk_Dariusz/temp/weather/rain.png
+http://admins.spec.pl.hostingasp.pl/Stefa%C5%84czyk_Dariusz/temp/weather/clouds.png
+http://admins.spec.pl.hostingasp.pl/Stefa%C5%84czyk_Dariusz/temp/weather/cloud.png
+http://admins.spec.pl.hostingasp.pl/Stefa%C5%84czyk_Dariusz/temp/weather/sun.png
+
+
+
+C. Można korzystać z:
+
+- dokumentacji do jquery, w3schools
+- spec-a
+- piszemy na komputerach pracownianych
+- nie używamy żadnych wcześniejszych ćwiczeń
+
+
+D. start
+
+- w htmlu jest tylko pusty znacznik table
+- używamy jquery - nie js
+
+
+E. Punktacja (10 pkt)
+
+1. tabela jak na ekranie z danymi tekstowymi na podstawie tablicy - 2
+2. slidery (dynamiczne div-y) w kolorach na podstawie danych - 2
+3. jakikolwiek pionowy ruch sliderów myszą - 1
+4. płynny ruch w zakresie długości kolorowych sliderów - 1
+5. poprawna zmiana wartości w sliderze (1-5) - 1
+6. poprawna zmiana obrazka nad sliderem (storm - sun) - 2
+7. poprawna zmiana obrazka średniej pogody (storm - sun) - 1
+
