@@ -8,9 +8,14 @@
       <button class="colors">kolory</button>
       <button class="font-plus">font +</button>
     </div>
-    <button class="side-info-button">zapisz ustawienia</button>
-    <button class="side-info-button">zmiana nazwy</button>
-    <button class="file-preview">podgląd pliku</button>
+    <button class="side-info-button save-settings">zapisz ustawienia</button>
+    <button class="side-info-button change-name">zmiana nazwy</button>
+    <form action="/viewFile" method="post">
+      <button type="submit" class="file-preview">podgląd pliku</button>
+      <input type="hidden" name="root" value="{{root}}" />
+      <input type="hidden" name="id" value="{{fileRoot}}">
+
+    </form>
   </div>
   <div class="side-files">
     <div class="file-path-name">
@@ -18,19 +23,63 @@
     </div>
     <div class="numbering">
     </div>
-    <textarea id="textarea" cols="180" rows="30">
+    <form class="edit-file-form" method="post">
+      <textarea id="textarea" cols="180" rows="30">
      {{fileContent}}
     </textarea>
-    <button style="margin-left: 15px;" class="side-info-button save-changes">zapisz zmiany</button>
+      <button type="submit" style="margin-left: 15px;" class="side-info-button save-changes">zapisz zmiany</button>
+      <input class="area-content" type="hidden" name="areaContent">
+      <input type="hidden" name="id" value="{{fileRoot}}">
+    </form>
   </div>
 </div>
+<dialog class="edit-folder-dialog">
+  <form action="/changeFileName" method="post" class="dialog-form">
+    <p class="dialog-p">zmiana nazwy pliku <span class="change-rootname">{{fileName}}</span> </p>
+    <input class="hidden-root" type="hidden" name="root" value="{{root}}" />
+    <input type="hidden" name="folderName" value="{{getNamePath root}}">
+    <input class="prev-file-name" type="hidden" name="previousName" value="{{fileRoot}}">
+    <input type="text" name="inputText" class="input-text">
+    <div class="buttons-div">
+      <button class="dialog-button" type="submit">ok</button>
+      <button autofocus class="dialog-button cancel-dialog-js-3" type="reset">cancel</button>
+    </div>
+  </form>
+
+</dialog>
 <script>
+  window.onload = () => {
+    const area = document.getElementById("textarea")
+    const numbering = document.querySelector('.numbering')
+    fetch("/loadSettings")
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        area.style.fontSize = data.fontSize
+        area.style.backgroundColor = data.areaBgColor
+        area.style.color = data.areaColor
+        numbering.style.backgroundColor = data.numberingColor
+        numbering.style.fontSize = data.numberingFontSize
+        area.value = area.value.trim()
+      })
+      .catch(error => console.log(error));
+  }
   let option = 0
   const area = document.getElementById("textarea")
   const content = area.value.split("\n")
   const numbering = document.querySelector('.numbering')
   const areaMarginLeft = parseInt(window.getComputedStyle(area).getPropertyValue("margin-left").split('px')[0])
   const numberingMarginLeft = parseInt(window.getComputedStyle(numbering).getPropertyValue("margin-left").split('px')[0])
+  const editFileForm = document.querySelector('.edit-file-form')
+  const saveChangesBtn = document.querySelector('.save-changes')
+  const hiddenAreaContent = document.querySelector('.area-content')
+  let textAreaElement = document.getElementById('textarea')
+  const changeNameBtn = document.querySelector('.change-name')
+  const dialogChangeName = document.querySelector('.edit-folder-dialog')
+  const cancelDialog = document.querySelector('.cancel-dialog-js-3')
+  const saveSettingsBtn = document.querySelector('.save-settings')
+  const hiddenPrevName = document.querySelector('.prev-file-name')
+  const hiddenRoot = document.querySelector('.hidden-root')
   function bgToggle() {
     console.log(option)
     if (option === 0) {
@@ -42,6 +91,22 @@
       area.style.color = 'black'
       area.style.backgroundColor = 'white'
       numbering.style.backgroundColor = 'white'
+      option = 2
+    } else if (option === 2) {
+      area.style.color = 'yellow'
+      area.style.backgroundColor = 'rgb(8, 21, 119)'
+      numbering.style.backgroundColor = 'rgb(8, 21, 119)'
+      option = 3
+    } else if (option === 3) {
+      area.style.color = 'yellow'
+      area.style.backgroundColor = 'red'
+      numbering.style.backgroundColor = 'red'
+      option = 4
+    }
+    else if (option === 4) {
+      area.style.color = 'black'
+      area.style.backgroundColor = 'lightgreen'
+      numbering.style.backgroundColor = 'lightgreen'
       option = 0
     }
 
@@ -116,18 +181,49 @@
   textarea.addEventListener("scroll", function () {
     numbering.scrollTop = textarea.scrollTop
   })
-  let preview = 0
-  document.querySelector('.file-preview').addEventListener("click", () => {
-    if (preview === 0) {
-      area.style.display = 'none'
-      numbering.style.display = 'none'
-      document.querySelector('.save-changes').style.display = 'none'
-      preview = 1
-    } else if (preview === 1) {
-      area.style.display = 'block'
-      numbering.style.display = 'block'
-      document.querySelector('.save-changes').style.display = 'block'
-      preview = 0
-    }
+  saveChangesBtn.addEventListener("click", () => {
+    alert('Zmiany zapisano pomyślnie')
+    console.log(textAreaElement.value)
+    hiddenAreaContent.value = textAreaElement.value.trim()
+    editFileForm.action = "/editFile"
   })
+  changeNameBtn.addEventListener("click", () => {
+    dialogChangeName.style.display = 'flex'
+    dialogChangeName.showModal()
+  })
+  cancelDialog.addEventListener("click", () => {
+    dialogChangeName.style.display = 'none'
+    dialogChangeName.close()
+  })
+  saveSettingsBtn.addEventListener("click", () => {
+    let data = {
+      fontSize: null,
+      areaColor: null,
+      areaBgColor: null,
+      numberingColor: null,
+      numberingFontSize: null
+    }
+    console.log(window.getComputedStyle(area).fontSize)
+    console.log(window.getComputedStyle(area).color)
+    console.log(window.getComputedStyle(area).backgroundColor)
+    console.log(window.getComputedStyle(numbering).backgroundColor)
+    data.fontSize = window.getComputedStyle(area).fontSize
+    data.areaColor = window.getComputedStyle(area).color
+    data.areaBgColor = window.getComputedStyle(area).backgroundColor
+    data.numberingColor = window.getComputedStyle(numbering).backgroundColor
+    data.numberingFontSize = window.getComputedStyle(numbering).fontSize
+    alert('Zapisano pomyślnie')
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }
+    fetch("/fileSettings", options)
+      .then(response => response.json())
+      .then(data => alert(JSON.stringify(data, null, 5)))
+      .catch(error => console.log(error));
+  })
+
 </script>

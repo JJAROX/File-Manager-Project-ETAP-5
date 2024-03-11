@@ -55,7 +55,8 @@
           <img src="{{getIconPath this}}" alt="files-img" class="files-img">
           <button onclick="deleteFile('{{this}}')" class="files-btn" type="button">X</button>
           <br>
-          <button class="folders-name" formaction="/showFile" name="root" type="submit" value="{{root}}/{{this}}">
+          <button class="folders-name" formaction="{{txtGraphFile this}}" name="root" type="submit"
+            value="{{root}}/{{this}}">
             {{this}}</button>
           <input class="hidden-js" type="hidden" name="id" value="{{this}}">
         </form>

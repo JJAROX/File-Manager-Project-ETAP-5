@@ -13,7 +13,8 @@ let context = {
   root: 'upload',
   paths: [],
   fileRoot: null,
-  fileContent: ''
+  fileContent: '',
+  fileName: null
 }
 
 
@@ -71,7 +72,7 @@ app.engine('hbs', hbs({
 
 }));
 app.set('view engine', 'hbs');
-
+app.use(express.json())
 app.engine('hbs', hbs({
   defaultLayout: 'main.hbs',
   helpers: {
@@ -100,6 +101,27 @@ app.engine('hbs', hbs({
       const segments = path.split('//')
       return segments[segments.length - 1]
     },
+    txtGraphFile: function (fileName) {
+      const extension = fileName.split('.').pop()
+      switch (extension.toLowerCase()) {
+        case 'css':
+          return '/showFile'
+        case 'js':
+          return '/showFile'
+        case 'json':
+          return '/showFile'
+        case 'txt':
+          return '/showFile'
+        case 'jpg':
+          return '/showImage'
+        case 'png':
+          return '/showImage'
+        case 'html':
+          return '/showFile'
+        default:
+          return '/showError'
+      }
+    }
   }
 }));
 
@@ -268,7 +290,8 @@ app.post('/showFile', (req, res) => {
   context.fileRoot = `${req.body.root}`
   console.log(context.fileRoot);
   console.log(req.body);
-  fs.readFile(`${filepath}/${req.body.root}`, "utf-8", (err, data) => {
+  context.fileName = req.body.id
+  fs.readFile(`${context.root}/${req.body.root}`, "utf-8", (err, data) => {
     if (err) throw err
     console.log(data.toString());
     context.fileContent = data.toString()
@@ -425,3 +448,79 @@ app.post('/pathChange', (req, res) => {
   changePath(filepath, context)
   res.redirect('/')
 })
+app.post('/showError', (req, res) => {
+  res.render('showError.hbs');
+})
+app.post('/editFile', (req, res) => {
+  console.log(req.body);
+  fs.writeFile(`${filepath}/${req.body.id}`, `${req.body.areaContent}`, (err) => {
+    if (err) throw err
+    console.log("plik zapisany");
+    res.redirect('/')
+  })
+})
+app.post('/changeFileName', (req, res) => {
+  console.log(req.body);
+  if (fs.existsSync(`${req.body.root}`)) {
+    fs.rename(`${req.body.root}${req.body.previousName}`, `${req.body.root}/${req.body.inputText}`, (err) => {
+      if (err) console.log(err)
+      changePath(filepath, context)
+      console.log(context);
+      res.redirect('/')
+    })
+  }
+})
+app.post('/viewFile', (req, res) => {
+  if (fs.existsSync(`${req.body.root}${req.body.id}`)) {
+    res.sendFile(`${filepath}${req.body.id}`)
+  }
+})
+app.post('/fileSettings', (req, res) => {
+  const data = req.body
+  fs.writeFile('config.json', JSON.stringify(data), function (error) {
+    if (error) {
+      console.error(error);
+      res.status(500).send("Bład podczas zapisu danych");
+    } else {
+      res.send("Zapisano pomyślnie");
+    }
+  });
+})
+app.get('/loadSettings', (req, res) => {
+  fs.readFile('config.json', 'utf-8', function (error, data) {
+    if (error) {
+      console.error(error);
+      res.status(500).send("Bład podczas zapisu danych");
+    } else {
+      res.header("content-type", "application/json")
+      res.json(JSON.parse(data));
+    }
+  });
+})
+
+
+// cos na wzur tego:
+
+// app.post("/save", function (req, res) {
+//   const data = req.body;
+//   fs.writeFile('./modules/json/hexagonInfo.json', JSON.stringify(data), function (error) {
+//     if (error) {
+//       console.error(error);
+//       res.status(500).send("Bład podczas zapisu danych");
+//     } else {
+//       res.send("Zapisano pomyślnie");
+//     }
+//   });
+// });
+
+// app.get("/load", function (req, res) {
+//   fs.readFile('./modules/json/hexagonInfo.json', 'utf-8', function (error, data) {
+//     if (error) {
+//       console.error(error);
+//       res.status(500).send("Bład podczas zapisu danych");
+//     } else {
+//       res.header("content-type", "application/json")
+//       res.json(JSON.parse(data));
+//     }
+//   });
+// });
