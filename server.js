@@ -126,7 +126,7 @@ app.engine('hbs', hbs({
 }));
 
 app.use(express.static('static'))
-
+app.use(express.static('upload'))
 app.listen(PORT, function () {
   console.log("start serwera na porcie " + PORT)
 })
@@ -497,30 +497,10 @@ app.get('/loadSettings', (req, res) => {
     }
   });
 })
-
-
-// cos na wzur tego:
-
-// app.post("/save", function (req, res) {
-//   const data = req.body;
-//   fs.writeFile('./modules/json/hexagonInfo.json', JSON.stringify(data), function (error) {
-//     if (error) {
-//       console.error(error);
-//       res.status(500).send("Bład podczas zapisu danych");
-//     } else {
-//       res.send("Zapisano pomyślnie");
-//     }
-//   });
-// });
-
-// app.get("/load", function (req, res) {
-//   fs.readFile('./modules/json/hexagonInfo.json', 'utf-8', function (error, data) {
-//     if (error) {
-//       console.error(error);
-//       res.status(500).send("Bład podczas zapisu danych");
-//     } else {
-//       res.header("content-type", "application/json")
-//       res.json(JSON.parse(data));
-//     }
-//   });
-// });
+app.post("/showImage", (req, res) => {
+  context.fileRoot = `${req.body.root}`
+  console.log(context.fileRoot);
+  console.log(req.body);
+  context.fileName = req.body.id
+  res.render('showImage.hbs', context);
+})
