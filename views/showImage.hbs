@@ -1,4 +1,134 @@
 <div class="navbar">
   <a href="/" class="navbar-header">filemanager</a>
 </div>
-<img src="{{fileRoot}}" alt="{{id}}">
+<div class="main" style="background-color: rgb(211, 211, 211); height:100vh">
+  <div class="side-info-2" style="width: 15vw;">
+    <button class="side-info-button filters">filters</button>
+  </div>
+  <div class="div-filters">
+    {{#each effects}}
+    <p class="filters-p">{{name}}</p>
+    <img class="filters-img filters-{{name}}" src="{{removeFirstElement ../fileRoot}}/{{../fileName}}"
+      style="filter:{{name}}(100%);">
+    {{/each}}
+  </div>
+  <div class="side-files">
+    <div class="file-path-name">
+      <p>{{removeFirstElement fileRoot}}/{{fileName}}</p>
+    </div>
+    <div class="image-div">
+      <img class="show-image" src="{{removeFirstElement fileRoot}}/{{fileName}}" alt="{{id}}">
+    </div>
+    <div class="buttons-image-container">
+      <button class="side-info-button change-name" style="margin-right: 15px;">zmiana nazwy pliku</button>
+      <button class="side-info-button save-changes" style="margin-right: 15px;">zapisz zmiany</button>
+      <form action="/viewImage" method="post">
+        <button type="submit" class="file-preview">podgląd pliku</button>
+        <input type="hidden" name="root" value="{{root}}" />
+        <input type="hidden" name="id" value="/{{fileName}}">
+      </form>
+    </div>
+
+  </div>
+
+
+</div>
+<dialog class="edit-folder-dialog">
+  <form action="/changeFileName" method="post" class="dialog-form">
+    <p class="dialog-p">zmiana nazwy pliku <span class="change-rootname">{{fileName}}</span> </p>
+    <input class="hidden-root" type="hidden" name="root" value="{{root}}" />
+    <input type="hidden" name="folderName" value="{{getNamePath root}}">
+    <input class="prev-file-name" type="hidden" name="previousName" value="/{{fileName}}">
+    <input type="text" name="inputText" class="input-text">
+    <div class="buttons-div">
+      <button class="dialog-button" type="submit">ok</button>
+      <button autofocus class="dialog-button cancel-dialog-js-3" type="reset">cancel</button>
+    </div>
+  </form>
+
+</dialog>
+<script>
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+  const mainImage = document.querySelector('.show-image')
+  const saveChangesBtn = document.querySelector('.save-changes')
+  const hiddenRoot = document.querySelector('.hidden-root')
+  const prevFileName = document.querySelector('.prev-file-name')
+  console.log(hiddenRoot.value + prevFileName.value)
+  console.log(window.getComputedStyle(mainImage).filter)
+  let image = new Image()
+  image.src = mainImage.src
+  console.log(image.src)
+  image.onerror = () => {
+    console.log('what')
+  }
+  image.onload = function () {
+
+    saveChangesBtn.addEventListener("click", () => {
+      alert('Zmiany zapisano pomyślnie')
+      canvas.width = 800
+      canvas.height = 400
+      context.filter = window.getComputedStyle(mainImage).filter;
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      let dataUrl = canvas.toDataURL("image/jpeg")
+      const body = JSON.stringify({
+        dataUrl: dataUrl,
+        path: mainImage.src
+      })
+      const headers = { "Content-Type": "application/json" }
+      fetch("/saveImage", { method: "post", body, headers })
+        .then(response => response.json())
+        .then(
+          data => {
+            console.log("plik zapisany")
+          }
+        )
+    })
+
+  }
+
+  const filtersBtn = document.querySelector('.filters')
+  const filterDiv = document.querySelector('.div-filters')
+  const filterP = document.querySelector('.filters-p')
+  const filterG = document.querySelector('.filters-grayscale')
+  const filterI = document.querySelector('.filters-invert')
+  const filterS = document.querySelector('.filters-sepia')
+  const filterN = document.querySelector('.filters-none')
+  const filterImg = document.querySelector('.filters-img')
+  const changeNameBtn = document.querySelector('.change-name')
+  const dialogChangeName = document.querySelector('.edit-folder-dialog')
+  const cancelDialog = document.querySelector('.cancel-dialog-js-3')
+  let boolean = false
+  filtersBtn.addEventListener("click", () => {
+    if (boolean === false) {
+      filterDiv.style.width = '200px'
+      filterDiv.style.marginTop = '50px'
+      filterDiv.style.left = '10px'
+      boolean = true
+    } else if (boolean === true) {
+      filterDiv.style.width = '0px'
+
+      boolean = false
+    }
+  })
+  filterG.addEventListener("click", () => {
+    mainImage.style.filter = 'grayscale(100%)'
+  })
+  filterI.addEventListener("click", () => {
+    mainImage.style.filter = 'invert(100%)'
+  })
+  filterS.addEventListener("click", () => {
+    mainImage.style.filter = 'sepia(100%)'
+  })
+  filterN.addEventListener("click", () => {
+    mainImage.style.filter = 'none'
+  })
+  changeNameBtn.addEventListener("click", () => {
+    dialogChangeName.style.display = 'flex'
+    dialogChangeName.showModal()
+  })
+  cancelDialog.addEventListener("click", () => {
+    dialogChangeName.style.display = 'none'
+    dialogChangeName.close()
+  })
+</script>

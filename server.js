@@ -14,7 +14,8 @@ let context = {
   paths: [],
   fileRoot: null,
   fileContent: '',
-  fileName: null
+  fileName: null,
+  effects: null
 }
 
 
@@ -121,6 +122,11 @@ app.engine('hbs', hbs({
         default:
           return '/showError'
       }
+    },
+    removeFirstElement: function (path) {
+      const segments = path.split('/')
+      segments.shift()
+      return segments.join('/')
     }
   }
 }));
@@ -153,6 +159,7 @@ app.get("/", function (req, res) {
   if (!fs.existsSync(filepath)) {
     // context.files.splice(0, context.files.length)
     // context.folders.splice(0, context.folders.length)
+    context.paths = []
     const rootSegments = context.root.split('//');
     let currentPath = '';
     rootSegments.forEach((segment) => {
@@ -168,6 +175,7 @@ app.get("/", function (req, res) {
   } else {
 
   }
+  console.log(`Context przy / : ${context.paths}`);
   res.render('index.hbs', context);
 })
 
@@ -177,7 +185,7 @@ app.post("/savefile", (req, res) => {
     fs.appendFile(path.join(__dirname, `${context.root}`, req.body.inputText), "", (err) => {
       if (err) throw err
       console.log("plik utworzony");
-      // context.files.push(req.body.inputText)
+      context.files.push(req.body.inputText)
       console.log(context);
     })
     filepath = path.join(__dirname, `${context.root}`)
@@ -331,7 +339,12 @@ app.post('/upload', (req, res) => {
     }
   });
   changePath(form.uploadDir, context)
-  console.log('Context przed redirectem' + context.paths);
+  console.log('Context przed redirectem: ' + context.paths);
+  const paths = context.paths
+  if (paths.filter((path, index) => paths.indexOf(path) !== index).length > 0) {
+    context.paths = []
+  }
+
   res.redirect('/');
   // fs.readdir(form.uploadDir, (err, files) => {
   //   if (err) throw err
@@ -479,6 +492,11 @@ app.post('/viewFile', (req, res) => {
     res.sendFile(`${filepath}${req.body.id}`)
   }
 })
+app.post('/viewImage', (req, res) => {
+  if (fs.existsSync(`${req.body.root}${req.body.id}`)) {
+    res.sendFile(`${filepath}${req.body.id}`)
+  }
+})
 app.post('/fileSettings', (req, res) => {
   const data = req.body
   fs.writeFile('config.json', JSON.stringify(data), function (error) {
@@ -502,9 +520,26 @@ app.get('/loadSettings', (req, res) => {
   });
 })
 app.post("/showImage", (req, res) => {
-  context.fileRoot = `${req.body.root}`
+  const effects = [
+    { name: "grayscale" },
+    { name: "invert" },
+    { name: "sepia" },
+    { name: "none" }
+  ]
+  context.effects = effects
+  context.fileRoot = `${context.root}`
   console.log(context.fileRoot);
   console.log(req.body);
   context.fileName = req.body.id
   res.render('showImage.hbs', context);
+})
+app.post("/saveImage", (req, res) => {
+  console.log(req.body);
+  const data = req.body.dataUrl
+  const path = req.body.path
+  console.log(path.slice(21));
+  const buffer = Buffer.from(data.slice(22), 'base64');
+  fs.writeFileSync(`upload${path.slice(21)}`, buffer);
+  console.log("ło tego");
+  res.redirect('/')
 })

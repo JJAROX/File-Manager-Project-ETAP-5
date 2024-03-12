@@ -508,3 +508,46 @@ body {
   width: 9.719rem;
   height: 15.563rem;
 }
+
+.image-div {
+  margin-top: 3.125rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.show-image {
+  height: 25rem;
+  width: 25rem;
+  border: 0.438rem dotted white;
+  background-color: transparent;
+}
+
+.div-filters {
+  position: absolute;
+  width: 0px;
+  height: 31.25rem;
+  top: 6.25rem;
+  left: -21.875rem;
+  background-color: rgb(34, 34, 34);
+  transition: width 1s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.filters-p {
+  color: white;
+}
+
+.buttons-image-container {
+  margin-top: 3.125rem;
+  display: flex;
+  justify-content: center;
+}
+
+.filters-img {
+  width: 100px;
+  height: 100px;
+}
