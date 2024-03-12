@@ -172,13 +172,15 @@ app.get("/", function (req, res) {
 })
 
 app.post("/savefile", (req, res) => {
-  if (!fs.existsSync(`${req.body.root}/${req.body.inputText}`)) {
-    fs.appendFile(path.join(__dirname, `${req.body.root}`, req.body.inputText), "", (err) => {
+  console.log('saveFile context: ' + context.root);
+  if (!fs.existsSync(`${context.root}/${req.body.inputText}`)) {
+    fs.appendFile(path.join(__dirname, `${context.root}`, req.body.inputText), "", (err) => {
       if (err) throw err
       console.log("plik utworzony");
-      context.files.push(req.body.inputText)
+      // context.files.push(req.body.inputText)
       console.log(context);
     })
+    filepath = path.join(__dirname, `${context.root}`)
     fs.readdir(filepath, (err, files) => {
       if (err) throw err
       context.folders = []
@@ -192,9 +194,6 @@ app.post("/savefile", (req, res) => {
           context.paths.push(currentPath);
         }
       });
-      // if (!context.root.includes('//')) {
-      //   context.paths.push(context.root);
-      // }
       files.forEach((file) => {
         const fullPath = path.join(filepath, file)
         fs.lstat(fullPath, (err, stats) => {
@@ -208,7 +207,7 @@ app.post("/savefile", (req, res) => {
         })
       })
     })
-    console.log(context);
+    console.log("Kontekst przed redirectem" + context);
     context.Message = null
     res.redirect('/');
   } else {
@@ -300,6 +299,8 @@ app.post('/showFile', (req, res) => {
 
 })
 app.post('/upload', (req, res) => {
+  console.log('To jest root przed uploadem' + context.root);
+
   let form = formidable({});
   form.keepExtensions = true;
   form.multiples = true;
@@ -329,13 +330,16 @@ app.post('/upload', (req, res) => {
       console.log(context);
     }
   });
-  fs.readdir(filepath, (err, files) => {
-    if (err) throw err
-    console.log("lista", files);
-    console.log(context);
-  })
-  console.log(context)
+  changePath(form.uploadDir, context)
+  console.log('Context przed redirectem' + context.paths);
   res.redirect('/');
+  // fs.readdir(form.uploadDir, (err, files) => {
+  //   if (err) throw err
+  //   console.log("lista", files);
+  //   console.log(context);
+
+  // })
+
 })
 app.post('/deleteFolder', (req, res) => {
   console.log(req.body);
